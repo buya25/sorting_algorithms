@@ -1,83 +1,93 @@
 #include "sort.h"
+#include <stdio.h>
 
 /**
- * quick_sort - Super fast and impractical sorting function
- * @array: The array to be sorted
- * @size: size of the array
- **/
+ * _swap - swaps two values in an array
+ *
+ * @array: data to sort
+ * @i: first value
+ * @j: second value
+ * @size: size of data
+ *
+ * Return: No Return
+ */
+void _swap(int *array, int i, int j, int size)
+{
+	int tmp;
+
+	if (array[i] != array[j])
+	{
+		tmp = array[i];
+		array[i] = array[j];
+		array[j] = tmp;
+		print_array(array, size);
+	}
+}
+
+/**
+ * partition - sorts a partition of data in relation to a pivot
+ *
+ * @array: data to sort
+ * @min: Left wall
+ * @max: right wall
+ * @size: size of data
+ *
+ * Return: New Pivot
+ */
+int partition(int *array, int min, int max, size_t size)
+{
+	int i = min, j, pivot  = array[max];
+
+	for (j = min; j <= max; j++)
+	{
+		if (array[j] < pivot)
+		{
+			_swap(array, i, j, size);
+			i++;
+		}
+
+	}
+	_swap(array, i, max, size);
+
+	return (i);
+}
+
+/**
+ * quicksort -  sorts an array of integers in ascending order using the
+ * Quick sort algorithm Lomuto partition scheme
+ *
+ * @array: data to sort
+ * @min: Left wall
+ * @max: right wall
+ * @size: size of data
+ *
+ * Return: No Return
+ */
+void quicksort(int *array, int min, int max, size_t size)
+{
+	int p;
+
+	if (min < max)
+	{
+		p = partition(array, min, max, size);
+		quicksort(array, min, p - 1, size);
+		quicksort(array, p + 1, max, size);
+	}
+}
+
+/**
+ * quick_sort -  sorts an array of integers in ascending order using the
+ * Quick sort algorithm Lomuto partition scheme
+ *
+ * @array: data to sort
+ * @size: size of data
+ *
+ * Return: No Return
+ */
 void quick_sort(int *array, size_t size)
 {
-	int *whole_array;
-	size_t full_size;
-
-	if (array == NULL)
+	if (size < 2)
 		return;
-	whole_array = &array[0];
-	full_size = size;
-	quick_sort_really(array, size, whole_array, full_size);
-}
 
-/**
- * quick_sort_really - Used to call the partitioner to get subarrays
- * @array: The array (sub array of last call) to be sorted
- * @size: Size of the array variable
- * @whole_array: The whole array that is to be sorted
- * @full_size: The full size of the array that's being sorted originally
- **/
-void quick_sort_really(int *array, size_t size, int *whole_array,
-		       size_t full_size)
-{
-	size_t part;
-
-	part = 0;
-
-	if (size > 1)
-	{
-		part = partitioner(array, size, whole_array, full_size);
-		quick_sort_really(&array[0], part, whole_array, full_size);
-		quick_sort_really(&array[part], size - part, whole_array, full_size);
-	}
-
-}
-
-/**
- * partitioner - Finds where to split the array and swaps larger items right
- * and smaller items left
- * @array: Size of the array (sub array of last call) being sorted
- * @size: Size of the array variable
- * @whole_array: The whole array that was being sorted
- * @full_size: Full size of the original array
- * Return: The index where the array should be split into two subarrays
- **/
-size_t partitioner(int *array, size_t size, int *whole_array, size_t full_size)
-{
-	int pivot;
-	long front;
-	long end;
-	int temp;
-
-	pivot = array[size - 1];
-	front = -1;
-	end = size;
-
-
-	while (1)
-	{
-		do {
-			front++;
-		} while (array[front] < pivot);
-		do {
-			end--;
-		} while (array[end] > pivot);
-
-		if (front >= end)
-		{
-			return ((size_t) front);
-		}
-		temp = array[front];
-		array[front] = array[end];
-		array[end] = temp;
-		print_array(whole_array, full_size);
-	}
-	return (end);
+	quicksort(array, 0, size - 1, size);
 }
